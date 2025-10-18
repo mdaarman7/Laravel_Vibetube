@@ -13,7 +13,7 @@
     @if(session('error'))
     <p style="color:red;">{{ session('error') }}</p>
     @endif
-
+    <a href="{{ route('home') }}" class="hover:text-red-400">Home</a>
     <form action="{{ route('videos.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="text" name="title" placeholder="Title" required><br><br>

@@ -45,6 +45,12 @@ class VideoController extends Controller
         return view('videos.index', compact('videos'));
     }
 
+    public function home()
+    {
+        $videos = Video::inRandomOrder()->get(); // random order
+        return view('videos.home', compact('videos'));
+    }
+
     // public function show(Video $video)
     // {
     //     return view('videos.show', compact('video'));
