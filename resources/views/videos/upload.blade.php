@@ -19,6 +19,8 @@
         <input type="text" name="title" placeholder="Title" required><br><br>
         <textarea name="description" placeholder="Description"></textarea><br><br>
         <input type="file" name="video" accept="video/*" required><br><br>
+        <label>Thumbnail (optional)</label>
+        <input type="file" name="thumbnail" accept="image/*" ><br><br>
         <button type="submit">Upload Video</button>
     </form>
 </body>

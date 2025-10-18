@@ -14,21 +14,27 @@ class VideoController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the input
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'video' => 'required|mimes:mp4,mov,avi|max:204800', // max 200MB
+            'video' => 'required|mimes:mp4,mov,avi|max:204800', // 200MB
+            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120', // 5MB
         ]);
 
-        // Store the video in public/videos
-        $path = $request->file('video')->store('videos', 'public');
+        // Store video
+        $videoPath = $request->file('video')->store('videos', 'public');
 
-        // Save info in DB
+        // Store thumbnail if provided
+        $thumbnailPath = null;
+        if ($request->hasFile('thumbnail')) {
+            $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
+        }
+
         Video::create([
             'title' => $request->title,
             'description' => $request->description,
-            'file_path' => $path,
+            'file_path' => $videoPath,
+            'thumbnail_path' => $thumbnailPath,
         ]);
 
         return redirect()->back()->with('success', 'Video uploaded successfully!');
