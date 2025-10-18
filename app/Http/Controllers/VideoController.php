@@ -33,11 +33,11 @@ class VideoController extends Controller
 
         return redirect()->back()->with('success', 'Video uploaded successfully!');
     }
-    // public function index()
-    // {
-    //     $videos = Video::latest()->get(); // get all videos
-    //     return view('videos.index', compact('videos'));
-    // }
+    public function index()
+    {
+        $videos = Video::latest()->get(); // get all videos
+        return view('videos.index', compact('videos'));
+    }
 
     // public function show(Video $video)
     // {
