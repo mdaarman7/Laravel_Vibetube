@@ -1,16 +1,23 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Home → shows all videos
+Route::get('/', [VideoController::class, 'home'])->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Upload routes
+Route::get('/videos/upload', [VideoController::class, 'create'])->name('videos.create');
+Route::post('/videos/upload', [VideoController::class, 'store'])->name('videos.store');
 
+// Video pages
+Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
+Route::get('/videos/{id}', [VideoController::class, 'show'])->name('videos.show');
+
+Route::get('/videos/{id}/stream', [VideoController::class, 'stream'])->name('videos.stream');
+
+// Auth routes (if using Breeze/Jetstream)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

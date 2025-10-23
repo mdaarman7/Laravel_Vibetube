@@ -9,7 +9,7 @@ class VideoController extends Controller
 {
     public function create()
     {
-        return view('videos.upload'); // form view
+        return view('videos.upload');
     }
 
     public function store(Request $request)
@@ -21,14 +21,10 @@ class VideoController extends Controller
             'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120', // 5MB
         ]);
 
-        // Store video
         $videoPath = $request->file('video')->store('videos', 'public');
-
-        // Store thumbnail if provided
-        $thumbnailPath = null;
-        if ($request->hasFile('thumbnail')) {
-            $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
-        }
+        $thumbnailPath = $request->hasFile('thumbnail')
+            ? $request->file('thumbnail')->store('thumbnails', 'public')
+            : null;
 
         Video::create([
             'title' => $request->title,
@@ -37,22 +33,42 @@ class VideoController extends Controller
             'thumbnail_path' => $thumbnailPath,
         ]);
 
-        return redirect()->back()->with('success', 'Video uploaded successfully!');
+        return redirect()->route('videos.index')->with('success', 'Video uploaded successfully!');
     }
+
     public function index()
     {
-        $videos = Video::latest()->get(); // get all videos
+        $videos = Video::latest()->get();
         return view('videos.index', compact('videos'));
     }
 
     public function home()
     {
-        $videos = Video::inRandomOrder()->get(); // random order
-        return view('videos.home', compact('videos'));
+        $videos = Video::inRandomOrder()->get();
+        return view('videos.index', compact('videos'));
     }
 
-    // public function show(Video $video)
-    // {
-    //     return view('videos.show', compact('video'));
-    // }
+    public function show($id)
+    {
+        $video = Video::findOrFail($id);
+        $otherVideos = Video::where('id', '!=', $id)->inRandomOrder()->take(6)->get();
+
+        return view('playVideos.show', compact('video', 'otherVideos'));
+    }
+    public function stream($id)
+    {
+        $video = Video::findOrFail($id);
+        $path = storage_path('app/public/' . $video->file_path);
+
+        $stream = fopen($path, 'rb');
+        $size = filesize($path);
+
+        return response()->stream(function () use ($stream) {
+            fpassthru($stream);
+        }, 200, [
+            'Content-Type' => 'video/mp4',
+            'Content-Length' => $size,
+            'Accept-Ranges' => 'bytes',
+        ]);
+    }
 }
