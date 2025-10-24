@@ -15,7 +15,7 @@ Route::post('/videos/upload', [VideoController::class, 'store'])->name('videos.s
 Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
 Route::get('/videos/{id}', [VideoController::class, 'show'])->name('videos.show');
 
-Route::get('/videos/{id}/stream', [VideoController::class, 'stream'])->name('videos.stream');
+Route::get('/videos/stream/{id}', [VideoController::class, 'stream'])->name('videos.stream');
 
 // Auth routes (if using Breeze/Jetstream)
 Route::middleware('auth')->group(function () {
