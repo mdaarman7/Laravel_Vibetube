@@ -10,6 +10,7 @@
 
 <body class="bg-gray-100 text-gray-900">
     <div class="min-h-screen flex flex-col lg:flex-row justify-center">
+
         {{-- Main Video Section --}}
         <main class="flex-1 p-6 flex justify-center">
             <div class="w-full max-w-[1000px]">
@@ -23,7 +24,7 @@
 
                 {{-- Video Player --}}
                 <div class="bg-black rounded-xl overflow-hidden mb-4">
-                    <video id="videoPlayer" class="w-full aspect-video object-contain" controls preload="metadata">
+                    <video id="videoPlayer" class="w-full aspect-video object-contain" controls autoplay>
                         <source src="{{ route('videos.stream', $video->id) }}" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
@@ -54,8 +55,8 @@
                 </div>
             </div>
         </main>
- 
-        {{-- Sidebar: Up Next  --}}
+
+        {{-- Sidebar: Up Next --}}
         <aside class="w-full lg:w-[400px] bg-gray-50 border-l border-gray-200 p-4">
             <h2 class="text-xl font-bold mb-4">Up Next</h2>
             <div class="space-y-4">
@@ -74,6 +75,17 @@
             </div>
         </aside>
     </div>
-</body>
 
+    {{-- Autoplay First Up Next Video --}}
+    <script>
+        const mainVideo = document.getElementById('videoPlayer');
+        mainVideo.addEventListener('ended', () => {
+            const firstUpNext = document.querySelector('aside .space-y-4 a');
+            if (firstUpNext) {
+                window.location.href = firstUpNext.href;
+            }
+        });
+    </script>
+
+</body>
 </html>
