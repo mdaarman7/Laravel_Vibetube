@@ -14,7 +14,7 @@ class Video extends Model
         'description',
         'file_path',
         'thumbnail_path',
-        'user_id', // must include this!
+        'user_id',  
     ];
 
     public function user()

@@ -15,15 +15,17 @@ Route::post('/videos/upload', [VideoController::class, 'store'])->name('videos.s
 Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
 Route::get('/videos/{id}', [VideoController::class, 'show'])->name('videos.show');
 
+// Streaming Video
 Route::get('/videos/stream/{id}', [VideoController::class, 'stream'])->name('videos.stream');
 
+// Dashboard Routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [VideoController::class, 'dashboard'])->name('dashboard');
 });
 
 Route::get('/search', [VideoController::class, 'search'])->name('videos.search');
 
-// Auth routes (if using Breeze/Jetstream)
+// Auth routes (using Breeze)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -40,7 +40,7 @@ class VideoController extends Controller
             'description' => $request->description,
             'file_path' => $videoPath,
             'thumbnail_path' => $thumbnailPath,
-            'user_id' => Auth::id(), // ✅ This fixes the SQL error
+            'user_id' => Auth::id(), //  
         ]);
 
         return redirect()->route('videos.index')->with('success', 'Video uploaded successfully!');
@@ -63,16 +63,16 @@ class VideoController extends Controller
     {
         $video = Video::findOrFail($id);
 
-        // Fetch recommended videos (random 6)
-        $recommendedVideos = Video::where('id', '!=', $id)
-            ->inRandomOrder()
-            ->take(6)
-            ->get();
-
-        // Fetch up next videos (latest 8)
+        // Fetch up next videos (Random 10)
         $upNextVideos = Video::where('id', '!=', $id)
+        ->inRandomOrder()
+        ->take(10)
+        ->get();
+        
+        // Fetch recommended videos (random 10)
+        $recommendedVideos = Video::where('id', '!=', $id)
             ->latest()
-            ->take(20)
+            ->take(10)
             ->get();
 
         return view('playVideos.show', compact('video', 'recommendedVideos', 'upNextVideos'));

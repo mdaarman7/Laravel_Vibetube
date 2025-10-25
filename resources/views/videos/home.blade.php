@@ -8,7 +8,7 @@
 </head>
 <body class="bg-gray-900 text-white">
 
-    <!-- Navbar -->
+    <!-- Nav bar -->
     <nav class="bg-gray-800 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <h1 class="text-2xl font-bold text-red-500">VibeTube</h1>
