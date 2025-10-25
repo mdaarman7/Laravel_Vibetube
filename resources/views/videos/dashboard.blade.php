@@ -4,13 +4,29 @@
         {{-- Header --}}
         <div class="flex justify-between items-center mb-6">
             
-            {{-- Home button --}}
-            <a href="{{ route('home') }}" 
-               class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition">
-                Home
-            </a>
+            {{-- Left side: User Name --}}
+            <div class="flex items-center space-x-3">
+                <h1 class="text-3xl font-bold">My Uploaded Videos</h1>
+                <span class="text-gray-600">| {{ Auth::user()->name }}</span>
+            </div>
+
+            {{-- Right side: Buttons --}}
+            <div class="flex items-center space-x-3">
+                {{-- Upload Video Button --}}
+                <a href="{{ route('videos.create') }}" 
+                   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                    Upload Video
+                </a>
+
+                {{-- Home Button --}}
+                <a href="{{ route('home') }}" 
+                   class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition">
+                    Home
+                </a>
+            </div>
         </div>
 
+        {{-- Videos Grid --}}
         @if ($videos->isEmpty())
             <p class="text-gray-500">You haven't uploaded any videos yet.</p>
         @else
