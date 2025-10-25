@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>VibeTube - Home</title>
-    @vite(['resources/css/app.css','resources/js/app.js'])
+    @vite('resources/css/app.css','resources/js/app.js')
 </head>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
