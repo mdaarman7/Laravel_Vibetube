@@ -9,11 +9,16 @@ class Video extends Model
 {
     use HasFactory;
 
-    protected $table="videos";
     protected $fillable = [
         'title',
         'description',
         'file_path',
         'thumbnail_path',
+        'user_id', // must include this!
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

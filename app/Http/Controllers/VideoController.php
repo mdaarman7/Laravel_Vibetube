@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Video;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
@@ -14,29 +15,37 @@ class VideoController extends Controller
         return view('videos.upload');
     }
 
+
+
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'video' => 'required|mimes:mp4,mov,avi|max:512000', // 500MB
-            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120', // 5MB
+            'video' => 'required|mimes:mp4,mov,avi|max:512000',
+            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
+        // Upload video
         $videoPath = $request->file('video')->store('videos', 'public');
+
+        // Upload thumbnail (optional)
         $thumbnailPath = $request->hasFile('thumbnail')
             ? $request->file('thumbnail')->store('thumbnails', 'public')
             : null;
 
+        // Create video with user_id of currently logged-in user
         Video::create([
             'title' => $request->title,
             'description' => $request->description,
             'file_path' => $videoPath,
             'thumbnail_path' => $thumbnailPath,
+            'user_id' => Auth::id(), // ✅ This fixes the SQL error
         ]);
 
         return redirect()->route('videos.index')->with('success', 'Video uploaded successfully!');
     }
+
 
     public function index()
     {
@@ -116,5 +125,12 @@ class VideoController extends Controller
         }, 206, $headers);
 
         return $response;
+    }
+    public function dashboard()
+    {
+        // Get videos uploaded by the logged-in user
+        $videos = Video::where('user_id', Auth::id())->latest()->get();
+
+        return view('videos.dashboard', compact('videos'));
     }
 }
