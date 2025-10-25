@@ -21,6 +21,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [VideoController::class, 'dashboard'])->name('dashboard');
 });
 
+Route::get('/search', [VideoController::class, 'search'])->name('videos.search');
+
 // Auth routes (if using Breeze/Jetstream)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

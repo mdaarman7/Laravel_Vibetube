@@ -133,4 +133,18 @@ class VideoController extends Controller
 
         return view('videos.dashboard', compact('videos'));
     }
+    public function search(Request $request)
+    {
+        $query = $request->get('query', '');
+
+        $videos = Video::where('title', 'like', "%{$query}%")->get();
+
+        // For AJAX suggestions
+        if ($request->ajax()) {
+            return response()->json($videos->pluck('title'));
+        }
+
+        // Return to the same page as your home/index page
+        return view('videos.index', compact('videos'));
+    }
 }
