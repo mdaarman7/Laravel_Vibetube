@@ -32,7 +32,18 @@
 
                 {{-- Video Info --}}
                 <div class="bg-white shadow-md rounded-xl p-4 mb-8">
-                    <h1 class="text-2xl font-bold mb-2">{{ $video->title }}</h1>
+                    <h1 class="text-2xl font-bold mb-1">{{ $video->title }}</h1>
+
+                    {{-- 👇 Display uploader name --}}
+                    @if ($video->user)
+                        <p class="text-sm text-gray-500 mb-3">
+                            Uploaded by: 
+                            <span class="font-medium text-gray-800">
+                                {{ $video->user->name }}
+                            </span>
+                        </p>
+                    @endif
+
                     <p class="text-gray-600">{{ $video->description }}</p>
                 </div>
 
@@ -41,15 +52,15 @@
                     <h2 class="text-xl font-bold mb-4">Recommended for You</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         @foreach ($recommendedVideos as $item)
-                        <a href="{{ route('videos.show', $item->id) }}"
-                            class="block bg-white shadow-md hover:shadow-lg rounded-lg overflow-hidden transition">
-                            <img src="{{ $item->thumbnail_path ? asset('storage/'.$item->thumbnail_path) : asset('images/default-thumb.jpg') }}"
-                                alt="thumbnail" class="w-full h-40 object-cover">
-                            <div class="p-3">
-                                <h3 class="text-sm font-semibold">{{ Str::limit($item->title, 50) }}</h3>
-                                <p class="text-xs text-gray-600 mt-1">{{ Str::limit($item->description, 60) }}</p>
-                            </div>
-                        </a>
+                            <a href="{{ route('videos.show', $item->id) }}"
+                               class="block bg-white shadow-md hover:shadow-lg rounded-lg overflow-hidden transition">
+                                <img src="{{ $item->thumbnail_path ? asset('storage/'.$item->thumbnail_path) : asset('images/default-thumb.jpg') }}"
+                                     alt="thumbnail" class="w-full h-40 object-cover">
+                                <div class="p-3">
+                                    <h3 class="text-sm font-semibold">{{ Str::limit($item->title, 50) }}</h3>
+                                    <p class="text-xs text-gray-600 mt-1">{{ Str::limit($item->description, 60) }}</p>
+                                </div>
+                            </a>
                         @endforeach
                     </div>
                 </div>
@@ -61,16 +72,16 @@
             <h2 class="text-xl font-bold mb-4">Up Next</h2>
             <div class="space-y-4">
                 @foreach ($upNextVideos as $item)
-                <a href="{{ route('videos.show', $item->id) }}"
-                    class="flex items-start bg-white shadow-sm hover:shadow-md rounded-lg overflow-hidden transition">
-                    <img src="{{ $item->thumbnail_path ? asset('storage/'.$item->thumbnail_path) : asset('images/default-thumb.jpg') }}"
-                        alt="thumbnail"
-                        class="w-40 h-24 object-cover flex-shrink-0">
-                    <div class="p-3 flex flex-col justify-between">
-                        <h3 class="text-sm font-semibold leading-tight">{{ Str::limit($item->title, 50) }}</h3>
-                        <p class="text-xs text-gray-600 mt-1">{{ Str::limit($item->description, 60) }}</p>
-                    </div>
-                </a>
+                    <a href="{{ route('videos.show', $item->id) }}"
+                       class="flex items-start bg-white shadow-sm hover:shadow-md rounded-lg overflow-hidden transition">
+                        <img src="{{ $item->thumbnail_path ? asset('storage/'.$item->thumbnail_path) : asset('images/default-thumb.jpg') }}"
+                             alt="thumbnail"
+                             class="w-40 h-24 object-cover flex-shrink-0">
+                        <div class="p-3 flex flex-col justify-between">
+                            <h3 class="text-sm font-semibold leading-tight">{{ Str::limit($item->title, 50) }}</h3>
+                            <p class="text-xs text-gray-600 mt-1">{{ Str::limit($item->description, 60) }}</p>
+                        </div>
+                    </a>
                 @endforeach
             </div>
         </aside>
