@@ -65,10 +65,10 @@ class VideoController extends Controller
 
         // Fetch up next videos (Random 10)
         $upNextVideos = Video::where('id', '!=', $id)
-        ->inRandomOrder()
-        ->take(10)
-        ->get();
-        
+            ->inRandomOrder()
+            ->take(10)
+            ->get();
+
         // Fetch recommended videos (random 10)
         $recommendedVideos = Video::where('id', '!=', $id)
             ->latest()
@@ -146,5 +146,46 @@ class VideoController extends Controller
 
         // Return to the same page as your home/index page
         return view('videos.index', compact('videos'));
+    }
+    public function edit(Video $video)
+    {
+        // Only owner can access edit page
+        if (Auth::id() !== $video->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('videos.edit', compact('video'));
+    }
+
+    public function update(Request $request, Video $video)
+    {
+        if (Auth::id() !== $video->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $video->update($validated);
+        return redirect()->route('dashboard')->with('success', 'Video updated successfully!');
+
+    }
+
+    public function destroy(Video $video)
+    {
+        if (Auth::id() !== $video->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        //  Delete file from storage
+        if ($video->video_path && file_exists(storage_path('app/public/' . $video->video_path))) {
+            unlink(storage_path('app/public/' . $video->video_path));
+        }
+
+        $video->delete();
+
+        return redirect()->route('dashboard')->with('success', 'Video deleted successfully.');
     }
 }

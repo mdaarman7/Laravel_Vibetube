@@ -1,49 +1,81 @@
 <x-app-layout>
-    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div x-data="{ open: false, deleteId: null }" class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
 
         {{-- Header --}}
         <div class="flex justify-between items-center mb-6">
-            
-            {{-- Left side: User Name --}}
-            <div class="flex items-center space-x-3">
-                <h1 class="text-3xl font-bold">My Uploaded Videos</h1>
-                <span class="text-gray-600">| {{ Auth::user()->name }}</span>
+            <a href="{{ route('home') }}" 
+               class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition">
+                Home
+            </a>
+
+            <a href="{{ route('videos.create') }}" 
+               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                + Upload Video
+            </a>
+        </div>
+
+        {{-- Videos --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            @foreach ($videos as $video)
+            <div class="relative group bg-white border rounded-lg shadow hover:shadow-lg transition transform hover:-translate-y-1 overflow-hidden">
+
+                {{-- Thumbnail --}}
+                <a href="{{ route('videos.show', $video->id) }}">
+                    <img src="{{ $video->thumbnail_path ? asset('storage/'.$video->thumbnail_path) : asset('images/default-thumb.jpg') }}"
+                         alt="{{ $video->title }}"
+                         class="w-full h-48 object-cover">
+                </a>
+
+                {{-- Edit/Delete --}}
+                <div class="absolute top-2 right-2 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <a href="{{ route('videos.edit', $video->id) }}"
+                       class="bg-yellow-400 text-white px-2 py-1 rounded hover:bg-yellow-500 transition" title="Edit Video">
+                        ✏️
+                    </a>
+
+                    <button @click.prevent="open = true; deleteId = {{ $video->id }}"
+                            class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition"
+                            title="Delete Video">
+                        🗑️
+                    </button>
+                </div>
+
+                {{-- Info --}}
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold truncate">{{ $video->title }}</h3>
+                    <p class="text-gray-600 text-sm mt-1">{{ Str::limit($video->description, 60) }}</p>
+                </div>
             </div>
+            @endforeach
+        </div>
 
-            {{-- Right side: Buttons --}}
-            <div class="flex items-center space-x-3">
-                {{-- Upload Video Button --}}
-                <a href="{{ route('videos.create') }}" 
-                   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                    Upload Video
-                </a>
-
-                {{-- Home Button --}}
-                <a href="{{ route('home') }}" 
-                   class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition">
-                    Home
-                </a>
+        {{-- Delete Confirmation Modal --}}
+        <div x-show="open" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-90"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-90"
+             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+             style="display: none;">
+            <div @click.away="open = false" class="bg-white rounded-lg p-6 w-96 shadow-lg">
+                <h2 class="text-xl font-bold mb-4">Confirm Deletion</h2>
+                <p class="mb-6">Are you sure you want to delete this video? This action cannot be undone.</p>
+                <div class="flex justify-end space-x-3">
+                    <button @click="open = false" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition">
+                        Cancel
+                    </button>
+                    <form :action="`/videos/${deleteId}`" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">
+                            Delete
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
 
-        {{-- Videos Grid --}}
-        @if ($videos->isEmpty())
-            <p class="text-gray-500">You haven't uploaded any videos yet.</p>
-        @else
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                @foreach ($videos as $video)
-                    <a href="{{ route('videos.show', $video->id) }}" 
-                       class="block bg-white border rounded-lg shadow hover:shadow-lg transition transform hover:-translate-y-1 overflow-hidden">
-                        <img src="{{ $video->thumbnail_path ? asset('storage/'.$video->thumbnail_path) : asset('images/default-thumb.jpg') }}"
-                             alt="{{ $video->title }}"
-                             class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold truncate">{{ $video->title }}</h3>
-                            <p class="text-gray-600 text-sm mt-1">{{ Str::limit($video->description, 60) }}</p>
-                        </div>
-                    </a>
-                @endforeach
-            </div>
-        @endif
     </div>
 </x-app-layout>

@@ -32,4 +32,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/videos/{video}/edit', [VideoController::class, 'edit'])->name('videos.edit');
+    Route::put('/videos/{video}', [VideoController::class, 'update'])->name('videos.update');
+    Route::delete('/videos/{video}', [VideoController::class, 'destroy'])->name('videos.destroy');
+});
+require __DIR__ . '/auth.php';
