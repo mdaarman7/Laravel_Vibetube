@@ -1,7 +1,8 @@
 <x-app-layout>
     <div x-data="{ open: false, deleteId: null }" class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
 
-        {{-- Header --}}
+        {{-- Header (only if videos exist) --}}
+        @if($videos->count() > 0)
         <div class="flex justify-between items-center mb-6">
             <a href="{{ route('home') }}" 
                class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition">
@@ -13,8 +14,10 @@
                 + Upload Video
             </a>
         </div>
+        @endif
 
         {{-- Videos --}}
+        @if($videos->count() > 0)
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @foreach ($videos as $video)
             <div class="relative group bg-white border rounded-lg shadow hover:shadow-lg transition transform hover:-translate-y-1 overflow-hidden">
@@ -48,6 +51,50 @@
             </div>
             @endforeach
         </div>
+
+        @else
+        {{-- No Videos Message with Animation --}}
+        <div class="flex flex-col items-center justify-center text-center py-24 animate-fadeInUp">
+            
+            <h2 class="animate-bounceSlow text-2xl font-semibold text-gray-700 mb-3">No videos uploaded yet</h2>
+            <p class="text-gray-500 mb-6">Start by uploading your first video to share your content.</p>
+            <a href="{{ route('videos.create') }}" 
+               class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+                Upload Your First Video
+            </a>
+        </div>
+
+        {{-- Custom Animations --}}
+        <style>
+            @keyframes fadeInUp {
+                0% {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes bounceSlow {
+                0%, 100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-10px);
+                }
+            }
+
+            .animate-fadeInUp {
+                animation: fadeInUp 0.8s ease-out both;
+            }
+
+            .animate-bounceSlow {
+                animation: bounceSlow 2s infinite ease-in-out;
+            }
+        </style>
+        @endif
 
         {{-- Delete Confirmation Modal --}}
         <div x-show="open" 

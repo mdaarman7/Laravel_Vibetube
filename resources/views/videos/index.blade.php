@@ -100,7 +100,7 @@
             </a>
 
             <a href="{{ route('videos.create') }}" class="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-800 transition">
-                Upload
+               + Upload
             </a>
 
             <form method="POST" action="{{ route('logout') }}">
@@ -119,7 +119,7 @@
 
             {{-- Upload button redirects to login if not authenticated --}}
             <a href="{{ route('login') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                Upload
+               + Upload
             </a>
             @endauth
         </div>
