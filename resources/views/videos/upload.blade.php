@@ -5,7 +5,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-gray-100 text-gray-900 p-8" x-data="{ loading: false }">
+<body class="bg-gray-100 text-gray-900 p-8" x-data="{ loading: false, dots: '' }" x-init="
+    setInterval(() => {
+        if(loading) dots = dots.length < 3 ? dots + '.' : '';
+    }, 500);
+">
 
     {{-- Back Button --}}
     <a href="{{ route('home') }}" class="text-blue-600 hover:underline">← Back to Home</a>
@@ -41,12 +45,12 @@
 
     {{-- Loading Overlay --}}
     <div x-show="loading" 
-         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+         class="fixed inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center z-50"
          style="display: none;">
-        <div class="flex flex-col items-center">
-            <img src="{{ asset('images/vibeTube_logo.png') }}" alt="Loading" class="w-24 h-24 animate-spin">
-            <p class="text-white mt-4 text-lg font-semibold">Uploading...</p>
-        </div>
+        <img src="{{ asset('images/vibeTube_logo.png') }}" alt="Loading" class="w-24 h-24 animate-spin">
+        <p class="text-white mt-4 text-lg font-semibold">
+            Uploading<span x-text="dots"></span>
+        </p>
     </div>
 
 </body>
