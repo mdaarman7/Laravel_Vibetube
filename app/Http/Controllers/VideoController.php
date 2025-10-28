@@ -170,7 +170,6 @@ class VideoController extends Controller
 
         $video->update($validated);
         return redirect()->route('dashboard')->with('success', 'Video updated successfully!');
-
     }
 
     public function destroy(Video $video)
@@ -188,4 +187,5 @@ class VideoController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Video deleted successfully.');
     }
+    
 }

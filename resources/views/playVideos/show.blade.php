@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+@include('layouts.header')
+
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -10,6 +12,7 @@
 </head>
 
 <body class="bg-gray-100 text-gray-900">
+    {{-- Top Navigation --}}
     <div class="min-h-screen flex flex-col lg:flex-row justify-center">
 
         {{-- Main Video Section --}}
@@ -64,7 +67,7 @@
                     </button>
 
                     {{-- Delete Confirmation Modal --}}
-                    <div x-show="open" 
+                    <div x-show="open"
                         x-transition:enter="transition ease-out duration-300"
                         x-transition:enter-start="opacity-0 scale-90"
                         x-transition:enter-end="opacity-100 scale-100"
