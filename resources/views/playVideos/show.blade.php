@@ -36,10 +36,58 @@
                 </div>
 
                 {{-- Video Info --}}
-                <div class="bg-white shadow-md rounded-xl p-4 mb-4">
+                <div class="bg-white shadow-md rounded-xl p-4 mb-4 relative">
+
+                    {{-- Edit/Delete buttons (only for owner) --}}
+                    @if (Auth::check() && Auth::id() === $video->user_id)
+                    <div x-data="{ open: false }" class="absolute top-4 right-4 flex space-x-2">
+                        {{-- Edit --}}
+                        <a href="{{ route('videos.edit', $video->id) }}"
+                            class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-blue-700 transition">
+                            ✏️ Edit
+                        </a>
+
+                        {{-- Delete --}}
+                        <button @click="open = true"
+                            class="bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-red-700 transition">
+                            🗑️ Delete
+                        </button>
+
+                        {{-- Delete Confirmation Modal --}}
+                        <div x-show="open"
+                            x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0 scale-90"
+                            x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-200"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-90"
+                            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                            style="display: none;">
+                            <div @click.away="open = false" class="bg-white rounded-lg p-6 w-96 shadow-lg">
+                                <h2 class="text-xl font-bold mb-4">Confirm Deletion</h2>
+                                <p class="mb-6">Are you sure you want to delete this video? This action cannot be undone.</p>
+                                <div class="flex justify-end space-x-3">
+                                    <button @click="open = false"
+                                        class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition">
+                                        Cancel
+                                    </button>
+                                    <form action="{{ route('videos.destroy', $video->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    {{-- Video Title and Description --}}
                     <h1 class="text-2xl font-bold mb-1">{{ $video->title }}</h1>
 
-                    {{-- Display uploader name --}}
                     @if ($video->user)
                     <p class="text-sm text-gray-500 mb-3">
                         Uploaded by:
@@ -47,54 +95,23 @@
                     </p>
                     @endif
 
-                    <p class="text-gray-600">{{ $video->description }}</p>
-                </div>
-
-                {{-- Show Edit/Delete buttons only for video owner --}}
-                @if (Auth::check() && Auth::id() === $video->user_id)
-                <div x-data="{ open: false }" class="flex space-x-3 mt-2">
-
-                    {{-- Edit --}}
-                    <a href="{{ route('videos.edit', $video->id) }}"
-                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                        ✏️ Edit
-                    </a>
-
-                    {{-- Delete --}}
-                    <button @click="open = true"
-                        class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
-                        🗑️ Delete
-                    </button>
-
-                    {{-- Delete Confirmation Modal --}}
-                    <div x-show="open"
-                        x-transition:enter="transition ease-out duration-300"
-                        x-transition:enter-start="opacity-0 scale-90"
-                        x-transition:enter-end="opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-200"
-                        x-transition:leave-start="opacity-100 scale-100"
-                        x-transition:leave-end="opacity-0 scale-90"
-                        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-                        style="display: none;">
-                        <div @click.away="open = false" class="bg-white rounded-lg p-6 w-96 shadow-lg">
-                            <h2 class="text-xl font-bold mb-4">Confirm Deletion</h2>
-                            <p class="mb-6">Are you sure you want to delete this video? This action cannot be undone.</p>
-                            <div class="flex justify-end space-x-3">
-                                <button @click="open = false" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition">
-                                    Cancel
-                                </button>
-                                <form action="{{ route('videos.destroy', $video->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">
-                                        Delete
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
+                    {{-- Description with See More --}}
+                    <div x-data="{ expanded: false }" class="relative">
+                        <p x-bind:class="expanded ? '' : 'line-clamp-3'"
+                            class="text-gray-600 transition-all duration-300 ease-in-out">
+                            {{ $video->description }}
+                        </p>
+                        @if (strlen($video->description) > 150)
+                        <button @click="expanded = !expanded"
+                            class="mt-2 text-blue-600 hover:underline focus:outline-none font-medium"
+                            x-text="expanded ? 'See Less' : 'See More'">
+                        </button>
+                        @endif
                     </div>
                 </div>
-                @endif
+
+
+
 
                 {{-- Recommended Videos Section --}}
                 <div class="mt-8">
